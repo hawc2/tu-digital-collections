@@ -1,21 +1,33 @@
 {{ define "main" }}
 {{ $items := site.Data.trains.items }}
 {{ $enriched := where $items "similar_items" "ne" nil }}
+{{ $sample := first 10 $enriched }}
 
 <section class="hero">
   <div class="wrap">
     <p class="eyebrow"><a href="{{ "trains/" | relURL }}">Trains at Temple</a></p>
     <h1>{{ .Title }}</h1>
     <p class="lead">{{ .Params.description }}</p>
-    <p class="lead" style="margin-top:16px;">Each photograph was encoded as a 512-dimensional vector using CLIP. Cosine similarity between these vectors measures how visually alike two images are — high similarity means similar composition, subject matter, and visual texture. Each row below shows one photograph alongside its three nearest neighbors across all {{ len $items }} items in the collection. The cherry border marks the reference image.</p>
+    <div class="at-a-glance" style="margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+      <span class="badge"
+        style="background: rgba(157, 34, 53, 0.1); color: var(--accent); padding: 0.6rem 1.2rem; border-radius: 99px; font-weight: 700; font-size: 0.9rem; border: 1px solid rgba(157, 34, 53, 0.2);">
+        {{ len $enriched }} items with similarity data</span>
+    </div>
+  </div>
+</section>
+
+<section class="wrap" style="padding: 2rem 0;">
+  <div style="max-width: 720px; margin: 0 auto; padding: 1.5rem 2rem; background: rgba(157,34,53,0.03); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0;">
+    <h3 style="margin: 0 0 0.5rem; font-family: var(--serif); font-size: 1rem; color: var(--accent);">How it works</h3>
+    <p style="margin: 0; font-size: 0.9rem; line-height: 1.6; color: var(--muted);">Each photograph was encoded as a 512-dimensional vector using CLIP (clip-vit-base-patch32), run entirely on local hardware. Cosine similarity between vectors measures visual resemblance — similar composition, subject matter, and texture produce higher scores. Below is a sample of 10 photographs, each shown alongside its three nearest neighbors from the full collection of {{ len $items }} items.</p>
   </div>
 </section>
 
 <section class="similar-browse wrap">
   <div class="section-title">
-    <h2>{{ len $enriched }} photographs · top 3 nearest neighbors each</h2>
+    <h2>Sample: 10 photographs with nearest neighbors</h2>
   </div>
-  {{ range $enriched }}
+  {{ range $sample }}
     {{ if .similar_items }}
     <div class="similarity-row">
       <div class="similarity-anchor">

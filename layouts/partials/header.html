@@ -19,7 +19,7 @@
     <nav class="header-nav">
       <a class="nav-link" href="{{ site.BaseURL }}">Home</a>
       <div class="dropdown">
-        <button class="nav-link dropdown-toggle">Collections</button>
+        <a class="nav-link dropdown-toggle" href="{{ "collections/" | absURL }}">Collections</a>
         <div class="dropdown-menu">
           {{ $collectionPages := where site.RegularPages "Section" "collections" }}
           {{ range $collectionPages }}
@@ -30,7 +30,7 @@
         </div>
       </div>
       <div class="dropdown">
-        <button class="nav-link dropdown-toggle">Trains</button>
+        <a class="nav-link dropdown-toggle" href="{{ "trains/" | absURL }}">Trains</a>
         <div class="dropdown-menu">
           {{ $trainPages := where site.RegularPages "Section" "trains" }}
           {{ range $trainPages }}
@@ -39,7 +39,7 @@
         </div>
       </div>
       <div class="dropdown">
-        <button class="nav-link dropdown-toggle">Dance</button>
+        <a class="nav-link dropdown-toggle" href="{{ "dance/" | absURL }}">Dance</a>
         <div class="dropdown-menu">
           {{ $dancePages := where site.RegularPages "Section" "dance" }}
           {{ range $dancePages }}
@@ -48,7 +48,7 @@
         </div>
       </div>
       <div class="dropdown">
-        <button class="nav-link dropdown-toggle">Posters</button>
+        <a class="nav-link dropdown-toggle" href="{{ "propaganda/" | absURL }}">Posters</a>
         <div class="dropdown-menu">
           {{ $posterPages := where site.RegularPages "Section" "propaganda" }}
           {{ range $posterPages }}
@@ -87,11 +87,16 @@
       });
     }
     btn.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      var wasOpen = dd.classList.contains('open');
-      document.querySelectorAll('.dropdown.open').forEach(function(d) { d.classList.remove('open'); });
-      if (!wasOpen) dd.classList.add('open');
+      if (isTouchDevice) {
+        // On touch: first tap opens dropdown, second tap navigates
+        if (!dd.classList.contains('open')) {
+          e.preventDefault();
+          e.stopPropagation();
+          document.querySelectorAll('.dropdown.open').forEach(function(d) { d.classList.remove('open'); });
+          dd.classList.add('open');
+        }
+        // If already open, let the link navigate naturally
+      }
     });
   });
 

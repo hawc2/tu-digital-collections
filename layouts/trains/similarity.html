@@ -1,7 +1,7 @@
 {{ define "main" }}
 {{ $items := site.Data.trains.items }}
 {{ $enriched := where $items "similar_items" "ne" nil }}
-{{ $sample := first 10 $enriched }}
+{{ $featured := where $enriched "featured_similarity" true }}
 
 <section class="hero">
   <div class="wrap">
@@ -19,23 +19,25 @@
 <section class="wrap" style="padding: 2rem 0;">
   <div style="max-width: 720px; margin: 0 auto; padding: 1.5rem 2rem; background: rgba(157,34,53,0.03); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0;">
     <h3 style="margin: 0 0 0.5rem; font-family: var(--serif); font-size: 1rem; color: var(--accent);">How it works</h3>
-    <p style="margin: 0; font-size: 0.9rem; line-height: 1.6; color: var(--muted);">Each photograph was encoded as a 512-dimensional vector using CLIP (clip-vit-base-patch32), run entirely on local hardware. Cosine similarity between vectors measures visual resemblance — similar composition, subject matter, and texture produce higher scores. Below is a sample of 10 photographs, each shown alongside its three nearest neighbors from the full collection of {{ len $items }} items.</p>
+    <p style="margin: 0; font-size: 0.9rem; line-height: 1.6; color: var(--muted);">Each photograph was encoded as a 512-dimensional vector using CLIP (clip-vit-base-patch32), run entirely on local hardware. Cosine similarity between vectors measures visual resemblance — similar composition, subject matter, and texture produce higher scores. Below are 10 curated photographs from different railroads, each shown alongside its three nearest visual neighbors from the full collection of {{ len $items }} items.</p>
   </div>
 </section>
 
 <section class="similar-browse wrap">
   <div class="section-title">
-    <h2>Sample: 10 photographs with nearest neighbors</h2>
+    <h2>Curated samples across railroads</h2>
   </div>
-  {{ range $sample }}
+  {{ range $featured }}
     {{ if .similar_items }}
     <div class="similarity-row">
       <div class="similarity-anchor">
+        <span class="similarity-anchor-badge">Source</span>
         <a href="{{ .record }}" target="_blank" rel="noopener">
           <img src="{{ .image_url }}" alt="{{ .title }}" loading="lazy" decoding="async" />
         </a>
         <p class="similarity-label">{{ .title }}</p>
       </div>
+      <div class="similarity-arrow" aria-hidden="true"></div>
       {{ range .similar_items }}
         {{ $sid := . }}
         {{ $sim := index (where $items "id" $sid) 0 }}
